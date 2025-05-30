@@ -7,7 +7,12 @@ local lsp = require("lsp-zero")
 lsp.on_attach(function(_, bufnr)
   lsp.default_keymaps({ buffer = bufnr })
 end)
-
+-- show diagnostics in a floating window
+vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostics" })
+-- send all diagnostics to the location list and open it
+vim.keymap.set("n", "<leader>q", function()
+  vim.diagnostic.setloclist({ open = true })
+end, { desc = "Diagnostics to loclist" })
 ---------------------------------------------------------------------------
 -- 1.  Register the servers you installed manually
 ---------------------------------------------------------------------------
@@ -46,7 +51,6 @@ cmp.setup({
   -- ↓↓↓ At least one LSP source is mandatory
   sources = {
     { name = "nvim_lsp" },
-    { "hrsh7th/cmp-nvim-lsp-signature-help", lazy = false },
     { name = "luasnip"  },
     { name = "buffer"   },
     { name = "path"     },
