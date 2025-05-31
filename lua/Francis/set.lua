@@ -30,4 +30,4 @@ vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50 --Fast unpdate time
 
-vim.opt.colorcolumn = "100" --Column at the right
+-- vim.opt.colorcolumn = "100" --Column at the right
