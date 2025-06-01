@@ -60,7 +60,7 @@ return {
         type = "server",
         port = "${port}",  -- nvim-dap will replace this at runtime
         executable = {
-          command = "/opt/homebrew/opt/llvm/bin/lldb-dap",
+          command = "/opt/homebrew/bin/lldb-dap",
           args    = { "--port", "${port}" },
         },
         name = "lldb",
@@ -69,7 +69,8 @@ return {
       -- 5b) GDB (fortran)
       dap.adapters.gdb = {
         type    = "executable",
-        command = "gdb",
+        command = "/opt/homebrew/bin/gdb",
+        args = { '--interpreter=mi' }, 
 
       }
 
@@ -90,7 +91,7 @@ return {
           program     = function()
             return vim.fn.input(
               "Path to executable: ",
-              vim.fn.getcwd() .. "/out/Debug",
+              vim.fn.getcwd() .. "/out/Debug/Main",
               "file"
             )
           end,
@@ -110,7 +111,7 @@ return {
           program     = function()
             return vim.fn.input(
               "Path to Fortran exe: ",
-              vim.fn.getcwd() .. "/out/Debug",
+              vim.fn.getcwd() .. "/out/Debug/Main",
               "file"
             )
           end,
