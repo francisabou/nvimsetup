@@ -30,4 +30,22 @@ vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50 --Fast unpdate time
 
+vim.opt.cmdheight=0
+
+-- init.lua (Neovim Lua)
+vim.opt.statusline = table.concat({
+    " ",
+    " ",
+    "%f",            -- file path
+    " %y",           -- filetype
+    " %m",           -- [+] if modified
+    " %{mode()}",    -- show current mode code
+    " %= ",          -- right‐align the rest
+    "%l,%c",         -- line and column
+    " ",
+    " %P",           -- percentage through file
+    " ",
+    " ",
+})
 -- vim.opt.colorcolumn = "100" --Column at the right
+

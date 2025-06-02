@@ -60,7 +60,7 @@ return {
         type = "server",
         port = "${port}",  -- nvim-dap will replace this at runtime
         executable = {
-          command = "/opt/homebrew/bin/lldb-dap",
+          command = "/opt/homebrew/opt/llvm/bin/lldb-dap",
           args    = { "--port", "${port}" },
         },
         name = "lldb",
