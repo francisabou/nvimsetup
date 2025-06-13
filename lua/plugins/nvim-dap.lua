@@ -26,23 +26,23 @@ return {
       if ok_ui then
           local dapui = dapui_err_or_module -- if pcall was successful, this is the dapui module
           dapui.setup()
-          vim.notify("nvim-dap-ui loaded and setup successfully!", vim.log.levels.INFO)
+          --vim.notify("nvim-dap-ui loaded and setup successfully!", vim.log.levels.INFO)
 
           dap.listeners.after.event_initialized["dapui_config"] = function()
-              vim.notify("DAP Initialized: Opening dapui", vim.log.levels.DEBUG)
+              --vim.notify("DAP Initialized: Opening dapui", vim.log.levels.DEBUG)
               dapui.open()
           end
           dap.listeners.before.event_terminated["dapui_config"] = function()
-              vim.notify("DAP Terminated: Closing dapui", vim.log.levels.DEBUG)
+              --vim.notify("DAP Terminated: Closing dapui", vim.log.levels.DEBUG)
               dapui.close()
           end
           dap.listeners.before.event_exited["dapui_config"] = function()
-              vim.notify("DAP Exited: Closing dapui", vim.log.levels.DEBUG)
+              --vim.notify("DAP Exited: Closing dapui", vim.log.levels.DEBUG)
               dapui.close()
           end
       else
           -- THIS WILL SHOW THE ORIGINAL ERROR FROM WITHIN YOUR CONFIG
-          vim.notify("Failed to load nvim-dap-ui within nvim-dap config: " .. tostring(dapui_err_or_module), vim.log.levels.ERROR, {title = "nvim-dap-ui Load Error"})
+          --vim.notify("Failed to load nvim-dap-ui within nvim-dap config: " .. tostring(dapui_err_or_module), vim.log.levels.ERROR, {title = "nvim-dap-ui Load Error"})
       end
       -- 4) If nvim-dap-virtual-text is installed, set it up:
       local ok_vt, dapvt = pcall(require, "nvim-dap-virtual-text")
