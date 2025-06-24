@@ -20,7 +20,7 @@ config.color_scheme = 'Catppuccin Mocha'  -- any of the 1000+ built-ins
 -- Optional manual tweaks
 config.colors = {
   foreground = '#c0caf5',
-  background = '#1e1e2e',
+  background = '#000000',
 }
 
 -- --------  Window aesthetics ----
@@ -35,7 +35,7 @@ config.window_decorations        = 'RESIZE'  -- no title-bar buttons
 --     border_top_color    = '#97abc2',
 --     border_bottom_color = '#97abc2',
 --  }
-config.window_background_opacity = 0.92
+config.window_background_opacity = 0.95
 config.window_padding= { left = 0, right = 0, top = 0, bottom = 0 }
 
 -- Optional textured backdrop
@@ -70,22 +70,22 @@ config.keys = {
     },
     {
         key = 'h',
-        mods='CTRL',
+        mods='ALT',
         action=wezterm.action.ActivateWindow(0),
     },
     {
         key = 'j',
-        mods='CTRL',
+        mods='ALT',
         action=wezterm.action.ActivateWindow(1),
     },
     {
         key = 'k',
-        mods='CTRL',
+        mods='ALT',
         action=wezterm.action.ActivateWindow(2),
     },
     {
         key = 'l',
-        mods='CTRL',
+        mods='ALT',
         action=wezterm.action.ActivateWindow(3),
     },
 }
