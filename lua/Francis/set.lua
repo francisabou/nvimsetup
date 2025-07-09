@@ -49,3 +49,5 @@ vim.opt.statusline = table.concat({
 })
 -- vim.opt.colorcolumn = "100" --Column at the right
 
+-- In your Neovim config (init.lua)
+vim.g.vimtex_indent_enabled = 1
