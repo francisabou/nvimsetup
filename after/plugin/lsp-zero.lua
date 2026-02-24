@@ -13,16 +13,17 @@ vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagn
 vim.keymap.set("n", "<leader>q", function()
   vim.diagnostic.setloclist({ open = true })
 end, { desc = "Diagnostics to loclist" })
+vim.keymap.set('n', '<Leader>gd', vim.lsp.buf.definition, { noremap = true, silent = true })
 ---------------------------------------------------------------------------
 -- 1.  Register the servers you installed manually
 ---------------------------------------------------------------------------
 lsp.setup_servers({
-  "clangd",   -- C/C++
-  "texlab",   -- LaTeX
-  "fortls",   -- Fortran
-  "cmake",    -- CMake
-  "lua_ls",   -- Lua
-  "pyright",  -- Python
+    "clangd",   -- C/C++
+    "texlab",   -- LaTeX
+    "fortls",   -- Fortran
+    "cmake",    -- CMake
+    "lua_ls",   -- Lua
+    "pyright",  -- Python
 })
 
 ---------------------------------------------------------------------------
@@ -42,7 +43,7 @@ lsp.setup()           -- <-- injects capabilities & default cmp setup
 local cmp = require("cmp")
 cmp.setup({
   mapping = {
-    ["<C-p>"]     = cmp.mapping.select_prev_item(),
+    ["<S-tab>"]     = cmp.mapping.select_prev_item(),
     ["<Tab>"]     = cmp.mapping.select_next_item(),
     ["<C-y>"]     = cmp.mapping.confirm({ select = true }),
     ["<C-Space>"] = cmp.mapping.complete(),

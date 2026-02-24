@@ -1,7 +1,8 @@
-vim.g.mapleader = " "
-vim.keymap.set('i','jk','<Esc>')
--- somewhere after your oil `setup()`
+-- Personal Shortcuts
+vim.g.mapleader = " " -- Defining leader character
+vim.keymap.set('i','jk','<Esc>') -- Exit insert mode 
 vim.keymap.set("n", "<leader>pv", function()
-  require('oil').open()        -- open in the current window
-  -- or: require('oil').open_float()  -- floating window
-end, { desc = "Oil file explorer" })
+    require('oil').open()
+    end, { desc = "Oil file explorer" }) -- Going back to file tree
+vim.keymap.set("n","<leader>o","o<Esc>") -- Insert a new line below
+vim.keymap.set("n","<leader>O","O<Esc>") -- Insert a new line above
