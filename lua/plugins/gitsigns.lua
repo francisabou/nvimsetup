@@ -1,5 +1,5 @@
 -- ~/.config/nvim/lua/plugins/gitsigns.lua
--- Official recommended config + built-in toggle (using Lazy.nvim `keys` table — most reliable method)
+-- Official recommended + error-free version (March 2026)
 
 return {
   {
@@ -7,7 +7,7 @@ return {
     event = "LazyFile",
 
     opts = function(_, opts)
-      -- Thicker, clearly visible signs (classic style — the #1 recommended change)
+      -- Thicker, clearly visible signs (classic style everyone uses)
       opts.signs = {
         add          = { text = "│" },
         change       = { text = "│" },
@@ -16,11 +16,11 @@ return {
         changedelete = { text = "~" },
         untracked    = { text = "│" },
       }
-      opts.signs_staged = opts.signs   -- same visible style for staged changes
+      opts.signs_staged = opts.signs   -- same style for staged changes
 
-      -- Popular quality-of-life options
+      -- Recommended quality-of-life options
       opts.signs_staged_enable = true
-      -- opts.current_line_blame = true        -- uncomment if you want always-on blame
+      -- opts.current_line_blame = true        -- uncomment if you want blame always visible
       opts.current_line_blame_opts = {
         virt_text = true,
         virt_text_pos = "eol",
@@ -30,25 +30,18 @@ return {
       opts.current_line_blame_formatter = "<author>, <author_time:%R> • <summary>"
 
       opts.word_diff = false
-      opts.max_file_length = 50000
+      opts.max_file_length = 50000          -- handles huge files
       opts.update_debounce = 200
-
-      -- Preserve ALL LazyVim default keymaps (]h, <leader>ghs, blame, staging, etc.)
-      local default_on_attach = opts.on_attach
-      opts.on_attach = function(buffer)
-        default_on_attach(buffer)
-      end
     end,
 
+    -- Remove LazyVim's conflicting <leader>uG toggle + add your custom one
     keys = {
-      -- Remove LazyVim's default conflicting <leader>uG toggle
       { "<leader>uG", false },
 
-      -- YOUR CUSTOM TOGGLE (registered reliably by Lazy.nvim)
       {
         "<leader>tg",
         function()
-          require("gitsigns").toggle_signs()   -- toggles ON/OFF
+          require("gitsigns").toggle_signs()
           local state = require("gitsigns.config").config.signcolumn
           vim.notify("Git Signs: " .. (state and "ON" or "OFF"), vim.log.levels.INFO)
         end,
