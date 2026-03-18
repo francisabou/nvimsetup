@@ -11,7 +11,7 @@ vim.opt.expandtab = true
 
 vim.opt.smartindent = true
 
-vim.opt.wrap = false  --Line wrap
+vim.opt.wrap = true  --Line wrap
 
 --No back ups, but long undotree
 vim.opt.swapfile = false
@@ -47,7 +47,8 @@ vim.opt.statusline = table.concat({
     " ",
     " ",
 })
--- vim.opt.colorcolumn = "100" --Column at the right
+vim.opt.textwidth = 80
+-- vim.opt.colorcolumn = "80"
 
 -- In your Neovim config (init.lua)
 vim.g.vimtex_indent_enabled = 1
