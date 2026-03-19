@@ -55,14 +55,10 @@ return {
       end
 
       -- 5) Define adapters:
-      -- 5a) LLDB (macOS xcrun lldb-dap)
+      -- 5a) LLDB (Homebrew LLVM lldb-dap)
       dap.adapters.lldb = {
-        type = "server",
-        port = "${port}",  -- nvim-dap will replace this at runtime
-        executable = {
-          command = "/opt/homebrew/opt/llvm/bin/lldb-dap",
-          args    = { "--port", "${port}" },
-        },
+        type = "executable",
+        command = "/opt/homebrew/opt/llvm/bin/lldb-dap",
         name = "lldb",
       }
 
