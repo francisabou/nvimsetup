@@ -1,21 +1,23 @@
-	return{
-        {"ThePrimeagen/99",
-		config = function()
-			local _99 = require("99")
+return {
+    {
+        "ThePrimeagen/99",
+        event = "VeryLazy",
+        config = function()
+            local _99 = require("99")
 
             -- For logging that is to a file if you wish to trace through requests
             -- for reporting bugs, i would not rely on this, but instead the provided
             -- logging mechanisms within 99.  This is for more debugging purposes
             local cwd = vim.uv.cwd()
             local basename = vim.fs.basename(cwd)
-			_99.setup({
+            _99.setup({
                 -- provider = _99.Providers.ClaudeCodeProvider,  -- default: OpenCodeProvider
-				logger = {
-					type = "file",
-					level = _99.DEBUG,
-					path = "/tmp/" .. basename .. ".99.debug",
-					print_on_error = true,
-				},
+                logger = {
+                    type = "file",
+                    level = _99.DEBUG,
+                    path = "/tmp/" .. basename .. ".99.debug",
+                    print_on_error = true,
+                },
                 -- When setting this to something that is not inside the CWD tools
                 -- such as claude code or opencode will have permission issues
                 -- and generation will fail refer to tool documentation to resolve
@@ -44,7 +46,7 @@
                     --- ... the other rules in that dir ...
                     ---
                     custom_rules = {
-                      "scratch/custom_rules/",
+                        "scratch/custom_rules/",
                     },
 
                     --- Configure @file completion (all fields optional, sensible defaults)
@@ -56,7 +58,8 @@
                     },
 
                     --- What autocomplete you use.
-                    source = "cmp" ,
+                    --- Changed from "cmp" to "blink" to match blink.cmp migration
+                    source = "blink",
                 },
 
                 --- WARNING: if you change cwd then this is likely broken
@@ -68,12 +71,12 @@
                 --- /foo/bar/AGENT.md
                 --- /foo/AGENT.md
                 --- assuming that /foo is project root (based on cwd)
-				md_files = {
-					"AGENT.md",
-				},
-			})
+                md_files = {
+                    "AGENT.md",
+                },
+            })
 
-            -- ──────── Model persistence ────────
+            -- -------- Model persistence --------
             local model_path = vim.fn.stdpath("data") .. "/99-model.txt"
 
             local function load_saved_model()
@@ -101,9 +104,9 @@
             -- Wrap set_model to persist on every change
             local orig_set_model = _99.set_model
             _99.set_model = function(model)
-                orig_set_model(model)
+                local result = orig_set_model(model)
                 save_model(model)
-                return _99
+                return result
             end
 
             -- take extra note that i have visual selection only in v mode
@@ -113,28 +116,38 @@
             --
             -- likely i'll add a mode check and assert on required visual mode
             -- so just prepare for it now
-			vim.keymap.set("v", "<leader>9v", function()
-				_99.visual()
-			end)
+            vim.keymap.set("v", "<leader>9v", function()
+                _99.visual()
+            end, { desc = "99: Visual prompt" })
 
             --- if you have a request you dont want to make any changes, just cancel it
-			vim.keymap.set("n", "<leader>9x", function()
-				_99.stop_all_requests()
-			end)
+            vim.keymap.set("n", "<leader>9x", function()
+                _99.stop_all_requests()
+            end, { desc = "99: Stop all requests" })
 
-			vim.keymap.set("n", "<leader>9s", function()
-				_99.search()
-            end)
+            vim.keymap.set("n", "<leader>9s", function()
+                _99.search()
+            end, { desc = "99: Search" })
 
-            -- Model picker (<leader>9m)
+            -- Model picker (<leader>9m) -- uses fzf-lua extension
             vim.keymap.set("n", "<leader>9m", function()
-                require("99.extensions.telescope").select_model()
-            end)
+                local ok, ext = pcall(require, "99.extensions.fzf_lua")
+                if ok then
+                    ext.select_model()
+                else
+                    vim.notify("99: fzf-lua picker extension not available", vim.log.levels.WARN)
+                end
+            end, { desc = "99: Select AI Model" })
 
-            -- Provider picker (<leader>9p) — switches provider AND resets model to that provider's default
+            -- Provider picker (<leader>9p) -- switches provider AND resets model
             vim.keymap.set("n", "<leader>9p", function()
-                require("99.extensions.telescope").select_provider()
-            end)
-		end,
-	},
+                local ok, ext = pcall(require, "99.extensions.fzf_lua")
+                if ok then
+                    ext.select_provider()
+                else
+                    vim.notify("99: fzf-lua picker extension not available", vim.log.levels.WARN)
+                end
+            end, { desc = "99: Select AI Provider" })
+        end,
+    },
 }

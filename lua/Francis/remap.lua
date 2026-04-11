@@ -1,8 +1,7 @@
 -- Personal Shortcuts
-vim.g.mapleader = " " -- Defining leader character
-vim.keymap.set('i','jk','<Esc>') -- Exit insert mode 
-vim.keymap.set("n", "<leader>pv", function()
-    require('oil').open()
-    end, { desc = "Oil file explorer" }) -- Going back to file tree
-vim.keymap.set("n","<leader>o","o<Esc>") -- Insert a new line below
-vim.keymap.set("n","<leader>O","O<Esc>") -- Insert a new line above
+-- mapleader is set in init.lua (before any require calls)
+vim.keymap.set("i", "jk", "<Esc>", { desc = "Exit insert mode" })
+vim.keymap.set("n", "<leader>o", "o<Esc>", { desc = "Insert blank line below" })
+vim.keymap.set("n", "<leader>O", "O<Esc>", { desc = "Insert blank line above" })
+vim.cmd("packadd nvim.undotree")
+vim.keymap.set("n", "<leader>u", require("undotree").open, { desc = "Open undotree" })

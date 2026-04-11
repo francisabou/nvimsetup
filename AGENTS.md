@@ -1,202 +1,162 @@
 # AGENTS.md - Neovim Configuration
 
-Personal Neovim configuration using **lazy.nvim** as the plugin manager.
-This is a Lua-based config, not a traditional Vimscript setup.
+Last reviewed: 2026-04-11
 
-## Repository Structure
+Personal Neovim configuration using `lazy.nvim` and Lua modules.
+
+## Repository Structure (Current)
 
 ```
-init.lua                    -- Entry point: loads Francis/ and config/lazy
+init.lua
+.luarc.json
+.stylua.toml
 lua/
   Francis/
-    init.lua                -- Loads remap.lua and set.lua
-    remap.lua               -- Global keymaps (leader, navigation)
-    set.lua                 -- Vim options (indent, UI, statusline)
+    init.lua
+    remap.lua
+    set.lua
   config/
-    lazy.lua                -- lazy.nvim bootstrap and setup
-  plugins/                  -- Plugin specs (lazy.nvim format, each returns a table)
-    lsp-zero.lua            -- LSP + Mason + completion dependencies
-    telescope.lua           -- Fuzzy finder
-    nvim-treesitter.lua     -- Syntax highlighting
-    harpoon2.lua            -- File navigation
-    nvim-dap.lua            -- Debug adapter protocol
-    cmake-tools.lua         -- CMake integration
-    gitsigns.lua            -- Git signs + keymaps
-    vimtex.lua              -- LaTeX support
-    rose-pine.lua           -- Colorscheme
-    oil.lua                 -- File explorer
-    99.lua                  -- ThePrimeagen/99 AI plugin
-    (others)                -- undotree, fugitive, todo-comments, etc.
-after/plugin/               -- Post-load configuration (keymaps, setup calls)
-  lsp-zero.lua              -- LSP server registration + cmp config
-  telescope.lua             -- Telescope keymaps
-  treesitter.lua            -- Treesitter parser list + highlight config
-  harpoon2.lua              -- Harpoon keymaps
-  rose-pine.lua             -- Colorscheme options
-  (others)                  -- cmake-tools, vimtex, undotree, fugitive, etc.
+    lazy.lua
+  plugins/
+     99.lua
+    arrow.lua
+    cmake-tools.lua
+    copilot.lua
+    fzf-lua.lua
+    gitsigns.lua
+    lsp.lua
+    mini-icons.lua
+    nvim-dap.lua
+    nvim-treesitter.lua
+    oil.lua
+    rose-pine.lua
+    todo-comments.lua
+    treesitter-context.lua
+    vim-fugitive.lua
+    vimtex.lua
+lsp/
+  lua_ls.lua
+after/plugin/
+  lsp.lua
 ```
 
-## Build / Lint / Test Commands
+## Runtime and Validation
 
-This is a Neovim config, not a compiled project. There is no formal build
-system, test suite, or linter configured for the config itself.
+- Current local runtime: `NVIM v0.12.1`
+- Requires `tree-sitter` CLI (installed via `npm install -g tree-sitter-cli`)
+- This repo is config-only (no traditional build/test pipeline)
 
-### Validating the configuration
+### Validation commands
 
 ```bash
-# Check for Lua syntax errors across all config files
-find ~/.config/nvim/lua -name '*.lua' -exec luac -p {} +
+# Lua syntax check (using luajit)
+find ~/.config/nvim/lua ~/.config/nvim/after ~/.config/nvim/lsp -name '*.lua' -print0 | xargs -0 -I{} luajit -bl "{}" /dev/null
 
-# Start Neovim and check for startup errors
+# Startup smoke test
 nvim --headless "+lua print('OK')" +qa
 
-# Check lazy.nvim plugin health
-nvim --headless "+Lazy health" +qa
-
-# Run Neovim's built-in health checks
+# Full health checks
 nvim --headless "+checkhealth" +qa
+
+# LSP health (preferred over lspconfig health)
+nvim --headless "+checkhealth vim.lsp" +qa
+
+# Plugin update availability (non-installing check)
+nvim --headless "+Lazy! check" +qa
 ```
 
-### Plugin management (inside Neovim)
+## Conventions
 
-```
-:Lazy sync       -- Install/update/clean all plugins
-:Lazy update     -- Update plugins to latest versions
-:Lazy health     -- Check lazy.nvim health
-:Mason           -- Manage LSP servers (UI)
-:TSUpdate        -- Update treesitter parsers
-```
+### Language and formatting
 
-### Project build commands (CMake projects edited in this Neovim)
+- All configuration is Lua.
+- Indentation preference is 4 spaces (`tabstop=4`, `shiftwidth=4`, `expandtab=true`).
+- Formatting enforced by `.stylua.toml` (4-space indent, 120 column width, double quotes).
+- `wrap` is currently enabled in `lua/Francis/set.lua` (`vim.opt.wrap = true`).
+- Avoid trailing whitespace.
 
-The config includes cmake-tools.nvim with these keymaps:
-- `<leader>cg` - CMake Generate
-- `<leader>cb` - CMake Build
-- `<leader>cr` - CMake Run
+### Plugin spec pattern
 
-Build output directory pattern: `out/${variant:buildType}`
-
-## Code Style Guidelines
-
-### Language and Format
-
-- **All configuration is written in Lua** (no Vimscript files).
-- **Indentation**: 4 spaces (set in `set.lua`: tabstop=4, softtabstop=4,
-  shiftwidth=4, expandtab=true). Some files use mixed indentation (tabs in
-  `99.lua`, 2-space in `rose-pine.lua`) -- prefer 4 spaces for consistency.
-- **No line wrapping** (`vim.opt.wrap = false`).
-- **No trailing whitespace**.
-
-### Plugin Spec Pattern
-
-Every file in `lua/plugins/` **must return a table** (lazy.nvim spec format):
+Each file in `lua/plugins/` should return a lazy.nvim spec table.
 
 ```lua
--- Simple plugin (no config)
-return {
-  { "author/plugin-name" }
-}
-
--- Plugin with config function
 return {
   {
     "author/plugin-name",
     dependencies = { "dep/plugin" },
-    config = function()
-      -- setup code here
-    end,
+    opts = {},
   },
 }
+```
 
--- Plugin using opts (preferred for simple setups)
+### LSP server config pattern
+
+Server-specific overrides go in `lsp/<server_name>.lua` (Nvim 0.12 native convention).
+Each file returns a config table:
+
+```lua
 return {
-  "author/plugin-name",
-  opts = {
-    option = value,
-  },
-  lazy = false,
+    settings = { ... },
 }
 ```
 
 ### Keymaps
 
-- **Leader key**: Space (`vim.g.mapleader = " "`)
-- **Local leader**: Backslash (`vim.g.maplocalleader = "\\"`)
-- Use `vim.keymap.set` for all keymaps, never the old `vim.api.nvim_set_keymap`.
-- Always include a `desc` field for discoverability:
-  ```lua
-  vim.keymap.set("n", "<leader>pv", function() ... end, { desc = "Oil file explorer" })
-  ```
-- For buffer-local keymaps, pass `{ buffer = bufnr, desc = "..." }`.
-- Alias `vim.keymap.set` to `map` in longer config blocks for brevity:
-  ```lua
-  local map = vim.keymap.set
-  map("n", "<Leader>dc", dap.continue, { desc = "DAP: Continue" })
-  ```
+- `mapleader` is space (`" "`), set in `init.lua` (before any `require` calls)
+- `maplocalleader` is backslash (`"\\"`)
+- Use `vim.keymap.set` with `buf` (not deprecated `buffer`) for buffer-local maps
+- All keymaps must include `desc` for discoverability
+- Nvim 0.12 built-in LSP keymaps are used: `K` (hover), `grr` (references), `grn` (rename), `gra` (code action), `gri` (implementation), `grt` (type def), `gO` (symbols)
+- Custom LSP keymaps: `<leader>gd` (definition), `<leader>e` (diagnostics float), `<leader>q` (diagnostics loclist)
 
-### Imports and Requires
+### Requires and error handling
 
 - Use `require("module")` with double quotes.
-- For optional dependencies, wrap in `pcall`:
-  ```lua
-  local ok, mod = pcall(require, "some-plugin")
-  if not ok then return end
-  ```
-- Top-level `init.lua` loads modules via `require("Francis")` and
-  `require("config.lazy")`.
+- Use `pcall(require, ...)` for optional integrations.
+- Use early returns (`if not ok then return end`).
 
-### Error Handling
+## Current Plugin Notes
 
-- Use `pcall(require, ...)` for optional plugin dependencies (see `nvim-dap.lua`
-  for the canonical pattern).
-- Abort early with `if not ok then return end` rather than nesting.
-- Use commented-out `vim.notify()` calls for debug logging (leave them as
-  comments, do not remove).
+- LSP keymaps live in `after/plugin/lsp.lua`; server configs live in `lsp/` directory (Nvim 0.12 native pattern).
+- Plugin stack for LSP/completion is `mason.nvim` (`mason-org`), `mason-lspconfig.nvim`, `nvim-lspconfig`, and `blink.cmp`.
+- Registered language servers: `clangd`, `texlab`, `fortls`, `cmake`, `lua_ls`, `pyright`.
+- Completion: `blink.cmp` with LSP, path, snippets, and buffer sources (replaced nvim-cmp).
+- Fuzzy finder: `fzf-lua` (replaced telescope.nvim). All searches use git-root detection.
+- File marks: `arrow.nvim` (replaced harpoon2 -> grapple.nvim -> arrow.nvim).
+- Treesitter: `nvim-treesitter` main branch + `vim.treesitter.start()` for highlighting.
+- Colorscheme: `rose-pine` (moon, transparent).
+- Explorer: `oil.nvim` (`<leader>pv`), lazy-loaded via keys.
+- Git: `vim-fugitive` + `gitsigns.nvim`.
+- DAP paths are macOS/Homebrew-specific in `lua/plugins/nvim-dap.lua`. Python DAP auto-detects `$VIRTUAL_ENV`.
+- AI: `99.nvim` with `blink.compat` for completion integration and `fzf_lua` extension for pickers.
+- Undotree: uses Nvim 0.12 built-in `nvim.undotree` package (loaded via `packadd nvim.undotree` in `remap.lua`; `<leader>u` opens it).
+- Copilot: loaded but `auto_trigger = false` by default; toggle with `<leader>cp`.
 
-### Naming Conventions
+## Current Ecosystem Status (Apr 2026)
 
-- **Plugin spec files**: named after the plugin (`telescope.lua`, `harpoon2.lua`,
-  `nvim-dap.lua`). Use lowercase with hyphens matching the plugin name.
-- **After-plugin files**: same name as the plugin spec they configure.
-- **Personal modules**: under `lua/Francis/` (capitalized, matching the user's
-  namespace).
-- **Local variables**: `snake_case` (`ok_dap`, `dapui`, `lua_opts`).
+- `lsp-zero.nvim` upstream project status is explicitly marked "Dead"; this config uses native Neovim LSP.
+- `nvim-treesitter/playground` is archived; this config uses Neovim built-ins (`:Inspect`, `:InspectTree`, `:EditQuery`).
+- `nvim-treesitter` repository is archived; this config uses the `main` branch rewrite for Nvim 0.12+.
+- `telescope.nvim` is effectively unmaintained; this config uses `fzf-lua` instead.
+- `harpoon` (harpoon2 branch) is stagnant; this config uses `arrow.nvim` (replaced grapple.nvim).
+- `nvim-cmp` is maintained as a hobby project; this config uses `blink.cmp` instead.
+- `nvim-web-devicons` replaced by `mini.icons` (lighter, faster); `package.preload` mock in `mini-icons.lua` redirects any `require("nvim-web-devicons")` calls.
+- `mason.nvim` has moved to the `mason-org` GitHub organization.
+- `mbbill/undotree` dropped in favor of Nvim 0.12 built-in `:Undotree` (requires `packadd nvim.undotree`).
 
-### Comments
+## Recommended Improvements (Prioritized)
 
-- Use `--` for inline and single-line comments.
-- Use section dividers in longer files:
-  ```lua
-  -- ──────── Section Name ────────
-  ---------------------------------------------------------------------------
-  -- N.  Section Name
-  ---------------------------------------------------------------------------
-  ```
-- Use numbered steps in complex setup functions (see `nvim-dap.lua`).
-- Comment out debug/notify lines rather than deleting them.
+1. Decide whether to keep `mason-lspconfig` for convenience or manage server installs purely via system package manager.
+2. Run `:Lazy! check` periodically and update `lazy-lock.json` only in intentional plugin-update changes.
+3. Install `debugpy` for Python DAP (`pip3 install debugpy`).
+4. `lua/Francis/set.lua` returns a module table (`M`) with `M.mode()` for the statusline; the `require("Francis.set")` in `init.lua` still works (return value is cached by Lua).
 
-### LSP Servers
+## Important Notes for Agents
 
-Registered LSP servers (in `after/plugin/lsp-zero.lua`):
-- `clangd` (C/C++), `texlab` (LaTeX), `fortls` (Fortran), `cmake` (CMake),
-  `lua_ls` (Lua), `pyright` (Python)
-
-### Key Plugin Details
-
-- **Colorscheme**: rose-pine (moon variant, transparent background)
-- **File explorer**: oil.nvim (opened via `<leader>pv`)
-- **Completion**: nvim-cmp with sources: nvim_lsp, luasnip, buffer, path
-- **Git**: vim-fugitive (`<leader>gs`) + gitsigns.nvim
-- **AI**: ThePrimeagen/99 plugin with AGENT.md auto-loading from project dirs
-
-### Important Notes for Agents
-
-1. **Do not modify `lazy-lock.json`** -- it is auto-generated by lazy.nvim.
-2. **Plugin specs go in `lua/plugins/`**, post-load config goes in `after/plugin/`.
-3. When adding a new plugin, create a new file in `lua/plugins/` returning a
-   lazy.nvim spec table. If it needs keymaps or setup after load, add a
-   corresponding file in `after/plugin/`.
-4. The 99 plugin auto-loads `AGENT.md` files from the project directory tree.
-5. **macOS paths** are hardcoded in places (e.g., `/opt/homebrew/` for lldb/gdb).
-   Do not change these without confirming the user's environment.
-6. This config targets Neovim 0.10+ (uses `vim.uv`, modern LSP APIs).
+1. Avoid changing `lazy-lock.json` unless the user explicitly asks for plugin updates.
+2. Plugin specs belong in `lua/plugins/`; LSP server configs belong in `lsp/`.
+3. `after/plugin/` now only contains `lsp.lua` (global LSP keymaps and diagnostics).
+4. For new plugins, create one plugin spec file. Prefer `opts`/`config`/`keys` in the spec over `after/plugin/`.
+5. Confirm before changing hardcoded macOS tool paths.
+6. Keep Neovim API usage aligned with 0.12+ behavior (use `vim.uv` not `vim.loop`, `buf` not `buffer` in keymap opts).
+7. Rely on built-in LSP keymaps (`grr`, `grn`, `gra`, `K`, etc.) instead of adding custom duplicates.

@@ -5,21 +5,27 @@ return {
     dependencies = {
       -- 2) Optional UI sidebar (must load after 'nvim-dap'):
       "rcarriga/nvim-dap-ui",
-      'nvim-neotest/nvim-nio',
+      "nvim-neotest/nvim-nio",
       -- 3) Optional inline virtual-text (must load after 'nvim-dap'):
       --"theHamsta/nvim-dap-virtual-text",
+    },
+    cmd = { "DapContinue", "DapToggleBreakpoint" },
+    keys = {
+      { "<Leader>dc", function() require("dap").continue() end, desc = "DAP: Continue" },
+      { "<Leader>so", function() require("dap").step_over() end, desc = "DAP: Step Over" },
+      { "<Leader>si", function() require("dap").step_into() end, desc = "DAP: Step Into" },
+      { "<Leader>se", function() require("dap").step_out() end, desc = "DAP: Step Out" },
+      { "<Leader>db", function() require("dap").toggle_breakpoint() end, desc = "DAP: Toggle Breakpoint" },
+      { "<Leader>dr", function() require("dap").repl.open() end, desc = "DAP: Open REPL" },
+      { "<Leader>dl", function() require("dap").run_last() end, desc = "DAP: Run Last" },
     },
     config = function()
       -- ──────── Begin DAP setup ────────
 
-      -- 1) Try to load 'dap'; if it fails, abort early:
-      local ok_dap, dap = pcall(require, "dap")
-      if not ok_dap then
-        return
-      end
+      local dap = require("dap")
 
-      -- 2) (Optional) Enable TRACE-level logging (goes to stdpath("cache").."/dap.log"):
-      dap.set_log_level("TRACE")
+      -- Log level: use WARN for daily use, switch to TRACE when debugging adapters
+      dap.set_log_level("WARN")
 
       -- 3) If nvim-dap-ui is installed, set it up and hook its open/close listeners:
       local ok_ui, dapui_err_or_module = pcall(require, "dapui")
@@ -55,25 +61,33 @@ return {
       end
 
       -- 5) Define adapters:
-      -- 5a) LLDB (Homebrew LLVM lldb-dap)
+      -- Helper: resolve executable from $PATH, warn if missing
+      local function resolve_exe(name, fallback)
+          local path = vim.fn.exepath(name)
+          if path ~= "" then return path end
+          if fallback and vim.fn.exepath(fallback) ~= "" then return vim.fn.exepath(fallback) end
+          vim.notify("DAP: " .. name .. " not found on $PATH", vim.log.levels.WARN)
+          return name -- return raw name so dap shows a clear error on launch
+      end
+
+      -- 5a) LLDB (resolved from $PATH, works across Homebrew/system/Linux)
       dap.adapters.lldb = {
         type = "executable",
-        command = "/opt/homebrew/opt/llvm/bin/lldb-dap",
+        command = resolve_exe("lldb-dap", "lldb-vscode"),
         name = "lldb",
       }
 
       -- 5b) GDB (fortran)
       dap.adapters.gdb = {
         type    = "executable",
-        command = "/opt/homebrew/bin/gdb",
-        args = { '--interpreter=mi' }, 
-
+        command = resolve_exe("gdb"),
+        args = { "--interpreter=mi" },
       }
 
       -- 5c) Python (debugpy)
       dap.adapters.python = {
         type    = "executable",
-        command = "/usr/bin/python3", -- adjust if needed
+        command = resolve_exe("python3"),
         args    = { "-m", "debugpy.adapter" },
       }
 
@@ -125,21 +139,12 @@ return {
           request    = "launch",
           program    = "${file}", -- current file
           pythonPath = function()
-            return "/usr/bin/python3"
+            local venv = os.getenv("VIRTUAL_ENV")
+            if venv then return venv .. "/bin/python3" end
+            return resolve_exe("python3")
           end,
         },
       }
-
-      -- 7) (Optional) Key mappings for common DAP actions:
-      --    You can remove or change these if you prefer other mappings.
-      local map = vim.keymap.set
-      map("n", "<Leader>dc", dap.continue,          { desc = "DAP: Continue" })
-      map("n", "<Leader>so", dap.step_over,         { desc = "DAP: Step Over" })
-      map("n", "<Leader>si", dap.step_into,         { desc = "DAP: Step Into" })
-      map("n", "<Leader>se", dap.step_out,          { desc = "DAP: Step Out" })
-      map("n", "<Leader>db", dap.toggle_breakpoint, { desc = "DAP: Toggle Breakpoint" })
-      map("n", "<Leader>dr", dap.repl.open,         { desc = "DAP: Open REPL" })
-      map("n", "<Leader>dl", dap.run_last,          { desc = "DAP: Run Last" })
 
       -- ──────── End DAP setup ────────
     end,

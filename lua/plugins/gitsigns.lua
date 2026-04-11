@@ -1,38 +1,26 @@
--- ~/.config/nvim/lua/plugins/gitsigns.lua
--- Best-in-class + error-free (March 2026) — your classic signs + full keybinds
-
 return {
   {
     "lewis6991/gitsigns.nvim",
     event = "VeryLazy",
     opts = function(_, opts)
-      -- === Your favorite classic thick signs (most readable style) ===
+      -- Custom sign characters (thinner pipes than default)
       opts.signs = {
         add          = { text = "│" },
         change       = { text = "│" },
         delete       = { text = "_" },
         topdelete    = { text = "‾" },
-        changedelete = { text = "~" },
         untracked    = { text = "│" },
       }
-      opts.signs_staged = vim.deepcopy(opts.signs) -- perfect consistency
-      opts.signs_staged_enable = true
 
-      -- === Performance & modern QoL ===
-      opts.attach_to_untracked = true
-      opts.max_file_length     = 50000
-      opts.update_debounce     = 200
-      opts.word_diff           = false
-      opts.sign_priority       = 9
+      -- Non-default overrides only
+      opts.max_file_length = 50000
+      opts.update_debounce = 200
+      opts.sign_priority   = 9
 
-      -- Blame (off by default — toggle when needed)
-      opts.current_line_blame = false
+      -- Blame (custom formatter + faster delay)
       opts.current_line_blame_opts = {
-        virt_text           = true,
-        virt_text_pos       = "eol",
-        delay               = 200,
-        ignore_whitespace   = true,
-        virt_text_priority  = 100,
+        delay             = 200,
+        ignore_whitespace = true,
       }
       opts.current_line_blame_formatter = "<author>, <author_time:%R> • <summary>"
 
@@ -45,12 +33,12 @@ return {
         border   = "rounded",
       }
 
-      -- === Full-featured buffer-local keymaps (official recommended style) ===
+      -- Full-featured buffer-local keymaps
       opts.on_attach = function(bufnr)
         local gs = package.loaded.gitsigns
 
         local function map(mode, l, r, desc)
-          vim.keymap.set(mode, l, r, { buffer = bufnr, desc = "Git: " .. desc })
+          vim.keymap.set(mode, l, r, { buf = bufnr, desc = "Git: " .. desc })
         end
 
         -- Navigation (smart — works in vim diff mode too)
@@ -91,20 +79,17 @@ return {
         map("n", "<leader>gtw", gs.toggle_word_diff, "Toggle Word Diff")
         map("n", "<leader>gtd", gs.toggle_deleted, "Toggle Deleted Lines")
 
-        -- Text object (super powerful)
+        -- Text object
         map({ "o", "x" }, "ih", gs.select_hunk, "Select Hunk")
       end
     end,
 
-    -- Remove LazyVim's conflicting toggle + keep/improve yours
     keys = {
-      { "<leader>uG", false },
       {
         "<leader>tg",
         function()
           require("gitsigns").toggle_signs()
-          local state = require("gitsigns.config").config.signcolumn
-          vim.notify("Git Signs: " .. (state and "ON ✓" or "OFF ✗"), vim.log.levels.INFO)
+          vim.notify("Git Signs: toggled", vim.log.levels.INFO)
         end,
         desc = "Toggle Git Signs",
       },
