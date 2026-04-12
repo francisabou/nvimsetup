@@ -52,7 +52,7 @@ return {
             },
             completion = {
                 documentation = { auto_show = true, auto_show_delay_ms = 250 },
-                list = { selection = { preselect = true, auto_insert = false } },
+                list = { selection = { preselect = true, auto_insert = true } },
             },
             signature = { enabled = true },
             fuzzy = { implementation = "prefer_rust" },
