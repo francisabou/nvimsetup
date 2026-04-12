@@ -20,6 +20,7 @@ lua/
   plugins/
      99.lua
     arrow.lua
+    autopairs.lua
     cmake-tools.lua
     copilot.lua
     fzf-lua.lua
@@ -130,6 +131,7 @@ return {
 - DAP paths are macOS/Homebrew-specific in `lua/plugins/nvim-dap.lua`. Python DAP auto-detects `$VIRTUAL_ENV`.
 - AI: `99.nvim` with `blink.compat` for completion integration and `fzf_lua` extension for pickers.
 - Undotree: uses Nvim 0.12 built-in `nvim.undotree` package (loaded via `packadd nvim.undotree` in `remap.lua`; `<leader>u` opens it).
+- Autopairs: `nvim-autopairs` for auto-closing brackets/quotes, lazy-loaded on `InsertEnter`.
 - Copilot: loaded but `auto_trigger = false` by default; toggle with `<leader>cp`.
 
 ## Current Ecosystem Status (Apr 2026)

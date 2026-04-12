@@ -5,7 +5,6 @@ return {
         priority = 1000,
         opts = {
             variant = "moon",
-            disable_background = true,
             styles = {
                 transparency = true,
             },

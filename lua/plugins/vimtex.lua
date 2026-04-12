@@ -28,7 +28,7 @@ return {
                         vim.fn.mkdir(outdir, "p")
                     end
 
-                    vim.b[bufnr].vimtex_root = bufname
+                    vim.b[bufnr].vimtex_root = dir
                 end,
             })
         end,

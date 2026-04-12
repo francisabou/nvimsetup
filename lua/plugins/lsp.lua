@@ -10,6 +10,15 @@ return {
         },
     },
     { "neovim/nvim-lspconfig", lazy = false },
+    {
+        "folke/lazydev.nvim",
+        ft = "lua",
+        opts = {
+            library = {
+                { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+            },
+        },
+    },
     { "saghen/blink.compat", lazy = true, opts = {} },
     {
         "saghen/blink.cmp",
@@ -32,7 +41,14 @@ return {
                 nerd_font_variant = "mono",
             },
             sources = {
-                default = { "lsp", "path", "snippets", "buffer" },
+                default = { "lazydev", "lsp", "path", "snippets", "buffer" },
+                providers = {
+                    lazydev = {
+                        name = "LazyDev",
+                        module = "lazydev.integrations.blink",
+                        score_offset = 100,
+                    },
+                },
             },
             completion = {
                 documentation = { auto_show = true, auto_show_delay_ms = 250 },

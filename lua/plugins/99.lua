@@ -1,7 +1,13 @@
 return {
     {
         "ThePrimeagen/99",
-        event = "VeryLazy",
+        keys = {
+            { "<leader>9v", mode = "v", desc = "99: Visual prompt" },
+            { "<leader>9x", desc = "99: Stop all requests" },
+            { "<leader>9s", desc = "99: Search" },
+            { "<leader>9m", desc = "99: Select AI Model" },
+            { "<leader>9p", desc = "99: Select AI Provider" },
+        },
         config = function()
             local _99 = require("99")
 
@@ -81,16 +87,22 @@ return {
 
             local function load_saved_model()
                 local f = io.open(model_path, "r")
-                if not f then return nil end
+                if not f then
+                    return nil
+                end
                 local model = f:read("*a")
                 f:close()
-                if model and model ~= "" then return model end
+                if model and model ~= "" then
+                    return model
+                end
                 return nil
             end
 
             local function save_model(model)
                 local f = io.open(model_path, "w")
-                if not f then return end
+                if not f then
+                    return
+                end
                 f:write(model)
                 f:close()
             end

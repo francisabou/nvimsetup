@@ -6,8 +6,23 @@ return {
         build = ":TSUpdate",
         config = function()
             local wanted_parsers = {
-                "cpp", "latex", "fortran", "cmake",
-                "c", "lua", "vim", "vimdoc", "query", "python",
+                "cpp",
+                "latex",
+                "fortran",
+                "cmake",
+                "c",
+                "lua",
+                "vim",
+                "vimdoc",
+                "query",
+                "python",
+                "markdown",
+                "markdown_inline",
+                "bash",
+                "json",
+                "toml",
+                "gitcommit",
+                "diff",
             }
 
             require("nvim-treesitter").setup({})

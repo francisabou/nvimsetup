@@ -1,0 +1,6 @@
+-- Print a startup message
+local function print_message()
+    print("Neovim config loaded")
+end
+
+print_message()
