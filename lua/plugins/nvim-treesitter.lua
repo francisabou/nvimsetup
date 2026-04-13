@@ -23,6 +23,7 @@ return {
                 "toml",
                 "gitcommit",
                 "diff",
+                "matlab",
             }
 
             require("nvim-treesitter").setup({})

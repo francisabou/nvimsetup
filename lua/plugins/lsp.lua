@@ -5,7 +5,7 @@ return {
         lazy = false,
         dependencies = { "mason-org/mason.nvim", "neovim/nvim-lspconfig" },
         opts = {
-            ensure_installed = { "clangd", "texlab", "fortls", "cmake", "lua_ls", "pyright" },
+            ensure_installed = { "clangd", "texlab", "fortls", "cmake", "lua_ls", "pyright", "matlab_ls" },
             automatic_enable = true,
         },
     },
