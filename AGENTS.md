@@ -19,7 +19,8 @@ lua/
     lazy.lua
   plugins/
      99.lua
-    arrow.lua
+    harpoon-core.lua
+    lualine.lua
     autopairs.lua
     cmake-tools.lua
     copilot.lua
@@ -123,8 +124,9 @@ return {
 - Registered language servers: `clangd`, `texlab`, `fortls`, `cmake`, `lua_ls`, `pyright`.
 - Completion: `blink.cmp` with LSP, path, snippets, and buffer sources (replaced nvim-cmp).
 - Fuzzy finder: `fzf-lua` (replaced telescope.nvim). All searches use git-root detection.
-- File marks: `arrow.nvim` (replaced harpoon2 -> grapple.nvim -> arrow.nvim).
+- File marks: `harpoon-core.nvim` (replaced harpoon2 -> grapple.nvim -> arrow.nvim -> harpoon-core.nvim).
 - Treesitter: `nvim-treesitter` main branch + `vim.treesitter.start()` for highlighting.
+- Statusline: `lualine.nvim` with `rose-pine` theme, round separators, icons enabled.
 - Colorscheme: `rose-pine` (moon, transparent).
 - Explorer: `oil.nvim` (`<leader>pv`), lazy-loaded via keys.
 - Git: `vim-fugitive` + `gitsigns.nvim`.
@@ -140,7 +142,8 @@ return {
 - `nvim-treesitter/playground` is archived; this config uses Neovim built-ins (`:Inspect`, `:InspectTree`, `:EditQuery`).
 - `nvim-treesitter` repository is archived; this config uses the `main` branch rewrite for Nvim 0.12+.
 - `telescope.nvim` is effectively unmaintained; this config uses `fzf-lua` instead.
-- `harpoon` (harpoon2 branch) is stagnant; this config uses `arrow.nvim` (replaced grapple.nvim).
+- `harpoon` (harpoon2 branch) is stagnant; this config uses `harpoon-core.nvim` (replaced arrow.nvim).
+- `arrow.nvim` maintenance is slowing (PRs piling up); this config switched to `harpoon-core.nvim`.
 - `nvim-cmp` is maintained as a hobby project; this config uses `blink.cmp` instead.
 - `nvim-web-devicons` replaced by `mini.icons` (lighter, faster); `package.preload` mock in `mini-icons.lua` redirects any `require("nvim-web-devicons")` calls.
 - `mason.nvim` has moved to the `mason-org` GitHub organization.
@@ -151,7 +154,7 @@ return {
 1. Decide whether to keep `mason-lspconfig` for convenience or manage server installs purely via system package manager.
 2. Run `:Lazy! check` periodically and update `lazy-lock.json` only in intentional plugin-update changes.
 3. Install `debugpy` for Python DAP (`pip3 install debugpy`).
-4. `lua/Francis/set.lua` returns a module table (`M`) with `M.mode()` for the statusline; the `require("Francis.set")` in `init.lua` still works (return value is cached by Lua).
+4. `lua/Francis/set.lua` is a pure options file (no module return); statusline is handled by `lualine.nvim`.
 
 ## Important Notes for Agents
 
