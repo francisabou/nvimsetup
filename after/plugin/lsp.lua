@@ -16,5 +16,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
 
         map("<leader>gd", vim.lsp.buf.definition, "LSP: Go to definition")
+
+        -- Inlay hints (clangd, pyright, lua_ls support these)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client and client.supports_method("textDocument/inlayHint") then
+            vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+            map("<leader>ih", function()
+                local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
+                vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
+            end, "LSP: Toggle inlay hints")
+        end
     end,
 })
