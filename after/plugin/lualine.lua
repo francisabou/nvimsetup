@@ -1,7 +1,17 @@
+-- Build a transparent variant of the auto theme
+local custom_theme = require("lualine.themes.auto")
+for _, mode in pairs(custom_theme) do
+    for _, section in pairs(mode) do
+        if type(section) == "table" then
+            section.bg = "NONE"
+        end
+    end
+end
+
 require("lualine").setup({
     options = {
         icons_enabled = true,
-        theme = "auto",
+        theme = custom_theme,
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
         disabled_filetypes = {
