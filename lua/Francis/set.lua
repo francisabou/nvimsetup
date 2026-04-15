@@ -16,6 +16,7 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true
 
 vim.opt.wrap = true --Line wrap
+vim.opt.linebreak = true --Break at word boundaries
 
 --No back ups, but long undotree
 vim.opt.swapfile = false

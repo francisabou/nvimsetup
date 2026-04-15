@@ -12,9 +12,9 @@ return {
             { "<leader>rc", "<Plug>SlimeSendCell", mode = "n", remap = true, desc = "REPL: Send cell" },
             { "<leader>rv", "<Plug>SlimeConfig", mode = "n", remap = true, desc = "REPL: Reconfigure target" },
             { "<leader>rf", ":%SlimeSend<CR>", mode = "n", desc = "REPL: Send entire file" },
-            { "<leader>ro", mode = "n", desc = "REPL: Open terminal" },
-            { "<leader>ri", mode = "n", desc = "REPL: Interrupt" },
-            { "<leader>rk", mode = "n", desc = "REPL: Force kill" },
+            { "<leader>ro", desc = "REPL: Open terminal" },
+            { "<leader>ri", desc = "REPL: Interrupt (Ctrl-C)" },
+            { "<leader>rk", desc = "REPL: Force kill terminal" },
         },
         config = function()
             vim.g.slime_input_pid = false

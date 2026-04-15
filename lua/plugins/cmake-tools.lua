@@ -10,11 +10,11 @@ return {
             cmake_build_directory = "out/${variant:buildType}",
         },
         keys = {
-            { "<leader>cg", "<cmd>CMakeGenerate<cr>", desc = "CMake ▸ generate" },
-            { "<leader>cb", "<cmd>CMakeBuild<cr>", desc = "CMake ▸ build" },
-            { "<leader>cr", "<cmd>CMakeRun<cr>", desc = "CMake ▸ run" },
-            { "<leader>ct", "<cmd>CMakeSelectBuildType<cr>", desc = "CMake ▸ select build type" },
-            { "<leader>cc", "<cmd>CMakeClean<cr>", desc = "CMake ▸ clean" },
+            { "<leader>cg", "<cmd>CMakeGenerate<cr>", desc = "CMake : generate" },
+            { "<leader>cb", "<cmd>CMakeBuild<cr>", desc = "CMake : build" },
+            { "<leader>cr", "<cmd>CMakeRun<cr>", desc = "CMake : run" },
+            { "<leader>ct", "<cmd>CMakeSelectBuildType<cr>", desc = "CMake : select build type" },
+            { "<leader>cc", "<cmd>CMakeClean<cr>", desc = "CMake : clean" },
         },
     },
 }
