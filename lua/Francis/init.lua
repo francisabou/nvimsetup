@@ -32,3 +32,12 @@ vim.filetype.add({
         regionProperties = "cpp",
     },
 })
+
+-- Wolfram Language filetype detection
+-- Only .wl/.wls mapped to "mma"; .m left for Matlab
+vim.filetype.add({
+    extension = {
+        wl = "mma",
+        wls = "mma",
+    },
+})

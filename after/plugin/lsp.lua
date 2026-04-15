@@ -19,7 +19,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
         -- Inlay hints (off by default; toggle with <leader>ih)
         local client = vim.lsp.get_client_by_id(args.data.client_id)
-        if client and client.supports_method("textDocument/inlayHint") then
+        if client and client:supports_method("textDocument/inlayHint") then
             map("<leader>ih", function()
                 local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr })
                 vim.lsp.inlay_hint.enable(not enabled, { bufnr = bufnr })
@@ -27,3 +27,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end
     end,
 })
+
+-- Enable Wolfram LSP (not managed by mason-lspconfig)
+vim.lsp.enable("wolfram_ls")
