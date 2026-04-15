@@ -1,6 +1,6 @@
 # AGENTS.md - Neovim Configuration
 
-Last reviewed: 2026-04-13
+Last reviewed: 2026-04-15
 
 Personal Neovim configuration using `lazy.nvim` and Lua modules.
 
@@ -13,9 +13,10 @@ init.lua
 .gitignore
 lua/
   Francis/
-    init.lua          -- requires remap + set; OpenFOAM filetype detection
+    init.lua          -- requires remap + set; OpenFOAM + Wolfram filetype detection
     remap.lua
     set.lua
+    utils.lua         -- shared helpers (resolve_terminal for REPL workflows)
   config/
     lazy.lua
   plugins/
@@ -29,7 +30,7 @@ lua/
     gitsigns.lua
     harpoon-core.lua
     lsp.lua
-    lualine.lua
+    lualine.lua       -- full lualine setup (transparent theme, sections, refresh)
     mini-icons.lua
     nvim-dap.lua
     nvim-treesitter.lua
@@ -38,13 +39,17 @@ lua/
     todo-comments.lua
     treesitter-context.lua
     vim-fugitive.lua
+    vim-mma.lua       -- Wolfram/Mathematica syntax + REPL keymaps
+    vim-slime.lua     -- REPL integration (terminal-based send)
     vimtex.lua
     which-key.lua
+    tmp/              -- 99.nvim runtime data (gitignored)
 lsp/
   lua_ls.lua
+  matlab_ls.lua       -- MATLAB language server (finds local MATLAB.app)
+  wolfram_ls.lua      -- Wolfram LSP via WolframKernel (not mason-managed)
 after/plugin/
-  lsp.lua             -- global LSP keymaps and diagnostics
-  lualine.lua          -- full lualine setup (theme, sections, refresh)
+  lsp.lua             -- global LSP keymaps, diagnostics, wolfram_ls enable
 tmp/                   -- 99.nvim temp files (gitignored runtime data)
 ```
 
@@ -214,7 +219,7 @@ return {
 - Fuzzy finder: `fzf-lua` (replaced telescope.nvim). All searches use git-root detection via `vim.fs.root(0, ".git")`.
 - File marks: `harpoon-core.nvim` (replaced harpoon2 -> grapple.nvim -> arrow.nvim -> harpoon-core.nvim).
 - Treesitter: `nvim-treesitter` main branch + `vim.treesitter.start()` via FileType autocmd for highlighting.
-- Statusline: `lualine.nvim` with transparent custom theme (based on `auto` with all `bg = "NONE"`), round separators, icons enabled. Full config in `after/plugin/lualine.lua` (spec in `lua/plugins/lualine.lua` is minimal).
+- Statusline: `lualine.nvim` with transparent custom theme (based on `auto` with all `bg = "NONE"`), round separators, icons enabled. Full config in `lua/plugins/lualine.lua` spec `config` function.
 - Colorscheme: `rose-pine` (moon variant, transparency enabled).
 - Explorer: `oil.nvim` (`<leader>pv`), `lazy = false`, `delete_to_trash = true`, shows hidden files.
 - Git: `vim-fugitive` + `gitsigns.nvim` (extensive buffer-local keymaps for hunks, blame, diff, toggles).
@@ -225,7 +230,8 @@ return {
 - Copilot: `zbirenbaum/copilot.lua`, `auto_trigger = false` by default; toggle with `<leader>cp`. Accept keymaps use backtick prefix (`` `h ``, `` `j ``, `` `k ``). Panel disabled.
 - Notifications: `fidget.nvim` overrides `vim.notify()` for LSP progress and all notifications.
 - Keymap discovery: `which-key.nvim` loaded on `VeryLazy`.
-- Filetype detection: `lua/Francis/init.lua` registers OpenFOAM dictionary files (controlDict, fvSchemes, etc.) as `cpp` filetype.
+- Filetype detection: `lua/Francis/init.lua` registers OpenFOAM dictionary files (controlDict, fvSchemes, etc.) as `cpp` filetype and Wolfram `.wl`/`.wls` as `mma` filetype.
+- REPL helpers: `lua/Francis/utils.lua` provides shared `resolve_terminal()` used by `vim-slime` and `vim-mma` for terminal channel discovery.
 - Netrw is explicitly disabled in `set.lua` (`loaded_netrw = 1`, `loaded_netrwPlugin = 1`).
 
 ## Editor Options (`set.lua`)

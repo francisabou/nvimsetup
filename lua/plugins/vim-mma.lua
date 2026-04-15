@@ -2,9 +2,6 @@ return {
     {
         "voldikss/vim-mma",
         ft = { "mma" },
-        init = function()
-            vim.g.mma_auto_collapse = 0
-        end,
         config = function()
             vim.api.nvim_create_autocmd("FileType", {
                 pattern = "mma",
@@ -13,25 +10,7 @@ return {
                 callback = function(args)
                     local buf = args.buf
 
-                    local function resolve_terminal()
-                        if vim.b.slime_config and vim.b.slime_config.jobid then
-                            return { vim.b.slime_config.jobid }
-                        end
-                        local auto = vim.g.slime_get_jobid and vim.g.slime_get_jobid()
-                        if auto then
-                            return { auto }
-                        end
-                        local chans = {}
-                        for _, b in ipairs(vim.api.nvim_list_bufs()) do
-                            if vim.api.nvim_get_option_value("buftype", { buf = b }) == "terminal" then
-                                local ch = vim.api.nvim_get_option_value("channel", { buf = b })
-                                if ch and ch > 0 then
-                                    table.insert(chans, ch)
-                                end
-                            end
-                        end
-                        return chans
-                    end
+                    local resolve_terminal = require("Francis.utils").resolve_terminal
 
                     vim.keymap.set("n", "<leader>rq", function()
                         local chans = resolve_terminal()

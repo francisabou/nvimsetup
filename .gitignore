@@ -1,1 +1,3 @@
 .DS_Store
+tmp/
+lua/plugins/tmp/

@@ -1,8 +1,8 @@
 require("Francis.remap")
 require("Francis.set")
 
--- OpenFOAM dictionary filetype detection
--- These extensionless files use C++-style syntax (block comments, braces, #include)
+-- Filetype detection: OpenFOAM dictionaries (extensionless, C++-style syntax)
+-- and Wolfram Language (.wl/.wls → mma; .m left for Matlab)
 vim.filetype.add({
     filename = {
         -- system/
@@ -31,11 +31,6 @@ vim.filetype.add({
         g = "cpp",
         regionProperties = "cpp",
     },
-})
-
--- Wolfram Language filetype detection
--- Only .wl/.wls mapped to "mma"; .m left for Matlab
-vim.filetype.add({
     extension = {
         wl = "mma",
         wls = "mma",
