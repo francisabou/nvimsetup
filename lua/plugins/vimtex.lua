@@ -2,18 +2,23 @@ return {
     {
         "lervag/vimtex",
         ft = "tex",
+
         -- init runs BEFORE the plugin loads (vim.g.* must be set early)
         init = function()
             vim.g.vimtex_indent_enabled = 1
             vim.g.vimtex_compiler_method = "latexmk"
             vim.g.vimtex_compiler_continuous = 1
-            vim.g.vimtex_view_method = "skim"
+            vim.g.vimtex_view_method = "general"
+            vim.g.vimtex_view_general_cmd =
+                "bookokrat --synctex-forward @line:@col:@tex @pdf"
+
+            -- THIS IS THE IMPORTANT PART
             vim.g.vimtex_compiler_latexmk = {
+                out_dir = "out", -- <-- tell VimTeX where the PDF will be
                 options = {
                     "-pdf",
                     "-synctex=1",
                     "-interaction=nonstopmode",
-                    "-output-directory=out",
                 },
             }
         end,
