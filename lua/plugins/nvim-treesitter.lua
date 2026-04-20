@@ -35,12 +35,19 @@ return {
 
             -- Enable treesitter highlighting via Nvim built-in (0.12+)
             vim.api.nvim_create_autocmd("FileType", {
-                group = vim.api.nvim_create_augroup("treesitter-highlight", { clear = true }),
+                group = vim.api.nvim_create_augroup(
+                    "treesitter-highlight",
+                    { clear = true }
+                ),
                 desc = "Enable treesitter highlighting",
                 callback = function()
                     pcall(vim.treesitter.start)
                 end,
             })
         end,
+    },
+    {
+        "nvim-treesitter/nvim-treesitter-context",
+        opts = { max_lines = 3 },
     },
 }
