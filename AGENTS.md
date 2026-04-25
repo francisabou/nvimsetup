@@ -21,7 +21,6 @@ lua/
     99.lua
     autopairs.lua
     cmake-tools.lua
-    conform.lua
     copilot.lua
     fidget.lua
     fzf-lua.lua
@@ -56,7 +55,7 @@ tmp/                   -- 99.nvim temp files (gitignored runtime data)
 
 ## Conventions
 
-- All config is Lua. Format: 4-space indent, 80 col width, double quotes (enforced by `.stylua.toml` + `conform.nvim` format-on-save, `stylua` only).
+- All config is Lua. Format: 4-space indent, 80 col width, double quotes (per `.stylua.toml`).
 - `mapleader` = space (`" "`), `maplocalleader` = backslash (`"\\"`), set in `init.lua` before any `require`.
 - Use `vim.keymap.set` with `buf` (not deprecated `buffer`). All keymaps need `desc`.
 - Use `pcall(require, ...)` for optional integrations, early returns for guards.
