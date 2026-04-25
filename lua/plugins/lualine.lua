@@ -16,8 +16,14 @@ return {
                 options = {
                     icons_enabled = true,
                     theme = custom_theme,
-                    component_separators = { left = "\xee\x82\xb1", right = "\xee\x82\xb3" },
-                    section_separators = { left = "\xee\x82\xb0", right = "\xee\x82\xb2" },
+                    component_separators = {
+                        left = "\xee\x82\xb1",
+                        right = "\xee\x82\xb3",
+                    },
+                    section_separators = {
+                        left = "\xee\x82\xb0",
+                        right = "\xee\x82\xb2",
+                    },
                     disabled_filetypes = {
                         statusline = {},
                         winbar = {},
@@ -49,7 +55,24 @@ return {
                     lualine_a = { "mode" },
                     lualine_b = { "branch", "diff", "diagnostics" },
                     lualine_c = { "filename" },
-                    lualine_x = { "encoding", "fileformat", "filetype" },
+                    lualine_x = {
+                        "encoding",
+                        {
+                            function()
+                                local sysname = vim.loop.os_uname().sysname
+                                if sysname == "Darwin" then
+                                    return "" -- macOS
+                                elseif sysname == "Linux" then
+                                    return "" -- Ubuntu / Linux
+                                else
+                                    return "" -- Windows (fallback)
+                                end
+                            end,
+                            -- Optional: give it a nice color so it stands out
+                            color = { fg = "#a7c080" }, -- soft green; change to any hex you like
+                        },
+                        "filetype",
+                    },
                     lualine_y = { "progress" },
                     lualine_z = { "location" },
                 },
